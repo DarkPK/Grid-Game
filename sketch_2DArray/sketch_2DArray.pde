@@ -4,7 +4,7 @@
 int[][] screen;
 int col,row;
 int squareWidth,squareHeight;
-int charX,charY;
+int charX,charY,monsterX,monsterY;
 
 
 void setup() {
@@ -12,9 +12,12 @@ void setup() {
   col = 15;
   row = 20;
   getValuesOfBoard();
+  getMonsters();
 }
 
 void draw() {
+  monCharDetection();
+  moveMonster();
   displayBackground();
 }
 
@@ -78,6 +81,40 @@ void getValuesOfBoard() {
   screen[charX][charY] = 1;
 }
 
+void getMonsters() {
+  //sets the value of monster(s)
+  monsterX = int(random(col));
+  monsterY = int(random(row-1));
+  screen[monsterX][monsterY] = 2;
+}
+
+void moveMonster() {
+  //this gets the monster to move towards you
+  if (frameCount % 30 == 0) {
+    for (int x=col-1; x<=0; x--) {
+      for (int y=row-1; y<=0; y--) {
+        if (screen[x][y] == 2) {
+          screen[x][y] = 0;
+          if (monsterY < charY) {
+            screen[x][y+1] = 2;
+          }
+          else if (monsterY > charY) {
+            screen[x][y-1] = 2;
+          }
+          else {
+            if (monsterX < charX) {
+              screen[x+1][y] = 2;
+            }
+            else if (monsterX > charX) {
+              screen[x-1][y] = 2;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 void displayBackground() {
   //This will make the grid for the game
   for (int x=0; x<col;x++) {
@@ -85,11 +122,24 @@ void displayBackground() {
       if (screen[x][y] == 1) {
         fill(0);
       }
+      else if (screen[x][y] == 2) {
+        fill(255,0,0);
+      }
       else {
         fill(255);
       }
       noStroke();
       rect(x*squareWidth,y*squareHeight,squareWidth,squareHeight);
     }
+  }
+}
+
+void monCharDetection() {
+  //checks if you touch monster
+  if (charX == monsterX && charY == monsterY) {
+    screen[charX][charY] = 2;
+    charX = col/2;
+    charY = row-1;
+    screen[col/2][row-1] = 1;
   }
 }
