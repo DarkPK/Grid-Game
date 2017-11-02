@@ -1,10 +1,12 @@
 //Kamden Wall
+//2D array project (Grid style Game)
 //
 
 int[][] screen;
 int col,row;
 int squareWidth,squareHeight;
 int charX,charY,monsterX,monsterY;
+int facing;
 
 
 void setup() {
@@ -42,6 +44,23 @@ void keyPressed() {
       moveCharR();
     }
   }
+  else if (key == ' ') {
+    if (facing == 0) {
+      if (charY != 1) {
+        screen[charX][charY-1] = 3;
+      }
+    }
+    else if (facing == 1) {
+      if (charX != col-1) {
+        screen[charX+1][charY] = 3;
+      }
+    }
+    else if (facing == 2) {
+      if (charY != row-1) {
+        screen[charX][charY+1] = 3;
+      }
+    }
+  }
 }
 
 void moveCharU() {
@@ -49,24 +68,28 @@ void moveCharU() {
   screen[charX][charY] = 0;
   charY --;
   screen[charX][charY] = 1;
+  facing = 0;
 }
 void moveCharD() {
   //moves character up
   screen[charX][charY] = 0;
   charY ++;
   screen[charX][charY] = 1;
+  facing = 2;
 }
 void moveCharL() {
   //moves character up
   screen[charX][charY] = 0;
   charX --;
   screen[charX][charY] = 1;
+  facing = 3;
 }
 void moveCharR() {
   //moves character up
   screen[charX][charY] = 0;
   charX ++;
   screen[charX][charY] = 1;
+  facing = 1;
 }
 
 void getValuesOfBoard() {
@@ -79,6 +102,7 @@ void getValuesOfBoard() {
   charX = col/2;
   charY = row-1;
   screen[charX][charY] = 1;
+  facing = 0;
 }
 
 void getMonsters() {
@@ -91,21 +115,27 @@ void getMonsters() {
 void moveMonster() {
   //this gets the monster to move towards you
   if (frameCount % 30 == 0) {
-    for (int x=col-1; x<=0; x--) {
-      for (int y=row-1; y<=0; y--) {
+    for (int x=col-1; x>=0; x--) {
+      for (int y=row-1; y>=0; y--) {
         if (screen[x][y] == 2) {
           screen[x][y] = 0;
           if (monsterY < charY) {
-            screen[x][y+1] = 2;
+            if (monsterY <= col-1) {
+              screen[x][y+1] = 2;
+            }
           }
           else if (monsterY > charY) {
-            screen[x][y-1] = 2;
+            if (monsterY != 0) {
+              screen[x][y-1] = 2;
+            }
           }
-          else {
-            if (monsterX < charX) {
+          if (monsterX < charX) {
+            if (monsterX <= row-1) {
               screen[x+1][y] = 2;
             }
-            else if (monsterX > charX) {
+          }
+          else if (monsterX > charX) {
+            if (monsterX != 0) {
               screen[x-1][y] = 2;
             }
           }
