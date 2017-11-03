@@ -2,11 +2,14 @@
 //2D array project (Grid style Game)
 //
 
+
+
 int[][] screen;
 int col,row;
 int squareWidth,squareHeight;
 int charX,charY,monsterX,monsterY;
 int facing;
+
 
 
 void setup() {
@@ -19,9 +22,12 @@ void setup() {
 
 void draw() {
   monCharDetection();
-  moveMonster();
   displayBackground();
+  moveMonsterD();
+  moveMonsterU();
 }
+
+
 
 void keyPressed() {
   if (key == 'w') {
@@ -29,39 +35,32 @@ void keyPressed() {
       moveCharU();
     }
   }
+  
   else if (key == 'a') {
     if (charX >= 1) {
       moveCharL();
     }
   }
+  
   else if (key == 's') {
     if (charY < row-1) {
       moveCharD();
     }
   }
+  
   else if (key == 'd') {
     if (charX < col-1) {
       moveCharR();
     }
   }
+  
   else if (key == ' ') {
-    if (facing == 0) {
-      if (charY != 1) {
-        screen[charX][charY-1] = 3;
-      }
-    }
-    else if (facing == 1) {
-      if (charX != col-1) {
-        screen[charX+1][charY] = 3;
-      }
-    }
-    else if (facing == 2) {
-      if (charY != row-1) {
-        screen[charX][charY+1] = 3;
-      }
-    }
+    spear();
   }
 }
+
+
+
 
 void moveCharU() {
   //moves character up
@@ -70,6 +69,9 @@ void moveCharU() {
   screen[charX][charY] = 1;
   facing = 0;
 }
+
+
+
 void moveCharD() {
   //moves character up
   screen[charX][charY] = 0;
@@ -77,6 +79,9 @@ void moveCharD() {
   screen[charX][charY] = 1;
   facing = 2;
 }
+
+
+
 void moveCharL() {
   //moves character up
   screen[charX][charY] = 0;
@@ -84,6 +89,9 @@ void moveCharL() {
   screen[charX][charY] = 1;
   facing = 3;
 }
+
+
+
 void moveCharR() {
   //moves character up
   screen[charX][charY] = 0;
@@ -91,6 +99,8 @@ void moveCharR() {
   screen[charX][charY] = 1;
   facing = 1;
 }
+
+
 
 void getValuesOfBoard() {
   //sets the board values
@@ -105,6 +115,8 @@ void getValuesOfBoard() {
   facing = 0;
 }
 
+
+
 void getMonsters() {
   //sets the value of monster(s)
   monsterX = int(random(col));
@@ -112,31 +124,31 @@ void getMonsters() {
   screen[monsterX][monsterY] = 2;
 }
 
-void moveMonster() {
-  //this gets the monster to move towards you
+
+
+void moveMonsterD() {
+  //this gets the monster to move down
   if (frameCount % 30 == 0) {
+    
     for (int x=col-1; x>=0; x--) {
+      
       for (int y=row-1; y>=0; y--) {
+        
         if (screen[x][y] == 2) {
           screen[x][y] = 0;
-          if (monsterY < charY) {
-            if (monsterY <= col-1) {
+          
+          if (y < charY) {
+            
+            if (y == row-1) {
+              screen[x][y] = 2;
+              monsterX = x;
+              monsterY = y;
+            }
+            
+            else {
               screen[x][y+1] = 2;
-            }
-          }
-          else if (monsterY > charY) {
-            if (monsterY != 0) {
-              screen[x][y-1] = 2;
-            }
-          }
-          if (monsterX < charX) {
-            if (monsterX <= row-1) {
-              screen[x+1][y] = 2;
-            }
-          }
-          else if (monsterX > charX) {
-            if (monsterX != 0) {
-              screen[x-1][y] = 2;
+              monsterX = x;
+              monsterY = y+1;
             }
           }
         }
@@ -145,6 +157,37 @@ void moveMonster() {
   }
 }
 
+
+
+void moveMonsterU() {
+  //moves the monster up
+  if (frameCount % 30 == 0) {
+    
+    for (int x=col-1; x>=0; x--) {
+      
+      for (int y=row-1; y>=0; y--) {
+        
+        if (y < charY) {
+          
+          if (y == 0) {
+            screen[x][y] = 2;
+            monsterX = x;
+            monsterY = y;
+          }
+          
+          else {
+            screen[x][y-1] = 2; 
+            monsterX = x;
+            monsterY = y-1;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
 void displayBackground() {
   //This will make the grid for the game
   for (int x=0; x<col;x++) {
@@ -152,17 +195,26 @@ void displayBackground() {
       if (screen[x][y] == 1) {
         fill(0);
       }
+      
       else if (screen[x][y] == 2) {
         fill(255,0,0);
       }
+      
+      else if (screen[x][y] == 3) {
+        fill(0,249,255);
+      }
+      
       else {
         fill(255);
       }
+      
       noStroke();
       rect(x*squareWidth,y*squareHeight,squareWidth,squareHeight);
     }
   }
 }
+
+
 
 void monCharDetection() {
   //checks if you touch monster
@@ -172,4 +224,26 @@ void monCharDetection() {
     charY = row-1;
     screen[col/2][row-1] = 1;
   }
+}
+
+
+
+void spear() {
+  //this is your attack
+  if (facing == 0 && charX != 0) {
+    screen[charX][charY-1] = 3;
+  }
+  
+  else if (facing == 1&& charX != col-1) {
+    screen[charX+1][charY] = 3;
+  }
+  
+  else if (facing == 2 && charY != row-1) {
+    screen[charX][charY+1] = 3;
+  }
+  
+  else if (facing == 3 && charY != 0){
+    screen[charX-1][charY] = 3;
+  }
+  
 }
