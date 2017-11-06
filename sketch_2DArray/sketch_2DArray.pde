@@ -3,12 +3,19 @@
 //
 
 
-
+//the grid
 int[][] screen;
 int col,row;
 int squareWidth,squareHeight;
+
+//different sprites
 int charX,charY,monsterX,monsterY;
 int facing;
+int spearX,spearY;
+
+//make spear leave
+int spearAttack;
+int spearTime;
 
 
 
@@ -22,9 +29,11 @@ void setup() {
 
 void draw() {
   monCharDetection();
+  spearMonCollision();
   displayBackground();
   moveMonsterD();
   moveMonsterU();
+  stopSpear();
 }
 
 
@@ -113,6 +122,9 @@ void getValuesOfBoard() {
   charY = row-1;
   screen[charX][charY] = 1;
   facing = 0;
+  
+  //this makes the spear leave
+  spearAttack = millis();
 }
 
 
@@ -230,20 +242,51 @@ void monCharDetection() {
 
 void spear() {
   //this is your attack
-  if (facing == 0 && charX != 0) {
+  if (facing == 0 && charY != 0) {
     screen[charX][charY-1] = 3;
+    spearX = charX;
+    spearY = charY-1;
+    spearTime = spearAttack;
   }
   
   else if (facing == 1&& charX != col-1) {
     screen[charX+1][charY] = 3;
+    spearX = charX+1;
+    spearY = charY;
+    spearTime = spearAttack;
   }
   
   else if (facing == 2 && charY != row-1) {
     screen[charX][charY+1] = 3;
+    spearX = charX;
+    spearY = charY+1;
+    spearTime = spearAttack;
   }
   
-  else if (facing == 3 && charY != 0){
+  else if (facing == 3 && charX != 0){
     screen[charX-1][charY] = 3;
+    spearX = charX-1;
+    spearY = charY;
+    spearTime = spearAttack;
+  } 
+}
+
+
+void stopSpear() {
+  //stops the spear
+ if (spearAttack - spearTime >= 1000) {
+   screen[spearX][spearY] = 0;
   }
-  
+}
+
+
+
+void spearMonCollision() {
+  //this will make yyou kill the monster
+  if (monsterX == spearX && monsterY == spearY) {
+    screen[monsterX][monsterY] = 0;
+    monsterX = 0;
+    monsterY = 0;
+    spearTime = spearAttack;
+  }
 }
