@@ -32,7 +32,7 @@ void draw() {
   spearMonCollision();
   displayBackground();
   moveMonsterD();
-  moveMonsterU();
+  //moveMonsterU();
   stopSpear();
 }
 
@@ -145,28 +145,23 @@ void moveMonsterD() {
     for (int x=col-1; x>=0; x--) {
       
       for (int y=row-1; y>=0; y--) {
-        
-        if (screen[x][y] == 2) {
-          screen[x][y] = 0;
           
           if (y < charY) {
             
-            if (y == row-1) {
-              screen[x][y] = 2;
-              monsterX = x;
-              monsterY = y;
-            }
+            if (screen[x][y] == 2) {
             
-            else {
-              screen[x][y+1] = 2;
-              monsterX = x;
-              monsterY = y+1;
+              if (y == row-1 && monsterY == y && monsterX == x) {
+                screen[x][y] = 2;
+              }
+            
+              else {
+                screen[x][y+1] = 2;
+              }
             }
-          }
-        }
-      }
-    }
-  }
+         }
+       }
+     }
+   }
 }
 
 
@@ -175,22 +170,22 @@ void moveMonsterU() {
   //moves the monster up
   if (frameCount % 30 == 0) {
     
-    for (int x=col-1; x>=0; x--) {
+    for (int x=0; x<col; x++) {
       
-      for (int y=row-1; y>=0; y--) {
+      for (int y=0; y<row; y++) {
         
-        if (y < charY) {
+        if (y > charY) {
           
-          if (y == 0) {
-            screen[x][y] = 2;
-            monsterX = x;
-            monsterY = y;
-          }
+          if (screen[x][y] == 2) {
+            screen[x][y] = 0;
           
-          else {
-            screen[x][y-1] = 2; 
-            monsterX = x;
-            monsterY = y-1;
+            if (y == 0 && monsterY == y && monsterX == x) {
+              screen[x][y] = 2;
+            }
+          
+            else if (monsterY == y && monsterX == x){
+              screen[x][y-1] = 2; 
+            }
           }
         }
       }
