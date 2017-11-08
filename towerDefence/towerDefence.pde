@@ -10,6 +10,10 @@ int squareWidth,squareHeight;
 
 //different sprites
 int charX,charY;
+Monster[] monsters = new Monster[5];
+
+//the time
+int timeUntilMonsters;
 
 
 
@@ -23,6 +27,8 @@ void setup() {
 
 void draw() {
   displayBackground();
+  startTimer();
+  getMonstersMoving();
 }
 
 
@@ -103,6 +109,11 @@ void getValuesOfBoard() {
   charY = row-1;
   screen[charX][charY] = 1;
   
+  //sets up monsters
+  for (int i=0; i<monsters.length; i++) {
+    monsters[i] = new Monster();
+  }
+  
 }
 
 
@@ -125,8 +136,24 @@ void displayBackground() {
         fill(255);
       }
       
-      noStroke();
+      //noStroke();
       rect(x*squareWidth,y*squareHeight,squareWidth,squareHeight);
     }
+  }
+}
+
+
+
+void startTimer() { 
+  //sets the timer
+  timeUntilMonsters = millis();
+}
+
+
+
+void getMonstersMoving() {
+  //gets the monsters comeing down every bit
+  for (int i=0; i<monsters.length; i++) {
+    monsters[i].move();
   }
 }
